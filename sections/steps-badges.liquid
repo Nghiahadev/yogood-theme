@@ -1,0 +1,143 @@
+{% comment %}
+  Section: Steps Badges (3 columns)
+  File: sections/steps-badges.liquid
+{% endcomment %}
+
+{%- assign uid = 'steps-badges-' | append: section.id -%}
+
+<section class="{{ uid }}">
+  <div class="{{ uid }}__inner page-width">
+    <div class="{{ uid }}__grid">
+      {%- for block in section.blocks -%}
+        <div class="{{ uid }}__item" {{ block.shopify_attributes }}>
+          <div class="{{ uid }}__badgeWrap">
+            <div class="{{ uid }}__badge">
+              <span class="{{ uid }}__badgeText">{{ block.settings.step_number }}</span>
+            </div>
+          </div>
+
+          <div class="{{ uid }}__content">
+            <h3 class="{{ uid }}__title">{{ block.settings.title }}</h3>
+            <p class="{{ uid }}__desc">{{ block.settings.text }}</p>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  .{{ uid }} {
+    background: {{ section.settings.bg_color }};
+    padding: {{ section.settings.pad_y }}px 0;
+  }
+
+  .{{ uid }}__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: {{ section.settings.gap }}px;
+    align-items: start;
+  }
+
+  /* ✅ Fix alignment to match your screenshot */
+  .{{ uid }}__item {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 22px;
+    align-items: center; /* center badge with text block */
+  }
+
+  .{{ uid }}__badgeWrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* scalloped badge */
+.{{ uid }}__badge{
+  width: 56px;
+  height: 56px;
+  background: {{ section.settings.badge_color }};
+  display: flex;              /* ✅ better than grid for text baseline */
+  align-items: center;
+  justify-content: center;
+}
+
+.{{ uid }}__badgeText{
+  color: {{ section.settings.badge_text_color }};
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+
+  line-height: 1;             /* ✅ fixes the “dropping” */
+  display: block;
+  transform: translateY(-2px); /* ✅ move text up (tweak -1 to -3 if needed) */
+  font-variant-numeric: tabular-nums;
+}
+
+  .{{ uid }}__title {
+    margin: 0 0 6px 0;
+    color: {{ section.settings.title_color }};
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+
+  .{{ uid }}__desc {
+    margin: 0;
+    color: {{ section.settings.text_color }};
+    opacity: 0.85;
+    line-height: 1.65;
+    font-size: 14px;
+    max-width: 360px;
+  }
+
+  @media (max-width: 990px) {
+    .{{ uid }}__grid {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+    .{{ uid }}__item {
+      grid-template-columns: 64px 1fr;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Steps badges (3 columns)",
+  "settings": [
+    { "type": "color", "id": "bg_color", "label": "Background color", "default": "#0b0b0b" },
+    { "type": "range", "id": "pad_y", "label": "Vertical padding", "min": 20, "max": 120, "step": 4, "default": 56 },
+    { "type": "range", "id": "gap", "label": "Column gap", "min": 12, "max": 80, "step": 2, "default": 44 },
+
+    { "type": "color", "id": "badge_color", "label": "Badge color", "default": "#3a3a3a" },
+    { "type": "color", "id": "badge_text_color", "label": "Badge text color", "default": "#ffffff" },
+
+    { "type": "color", "id": "title_color", "label": "Title color", "default": "#ffffff" },
+    { "type": "color", "id": "text_color", "label": "Text color", "default": "#cfcfcf" }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        { "type": "text", "id": "step_number", "label": "Number (ex: 01)", "default": "01" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Ice Cream" },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "Type your text." }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Steps badges (3 columns)",
+      "blocks": [
+        { "type": "step", "settings": { "step_number": "01", "title": "Ice Cream" } },
+        { "type": "step", "settings": { "step_number": "02", "title": "Yogurt" } },
+        { "type": "step", "settings": { "step_number": "03", "title": "Milk" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

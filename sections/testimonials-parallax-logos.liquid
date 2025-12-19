@@ -1,0 +1,515 @@
+{% comment %}
+  Testimonials + logos (Parallax BG + Marquee)
+{% endcomment %}
+
+{%- assign uid = 'tpl-' | append: section.id -%}
+
+<section class="{{ uid }}">
+  <!-- Background image (from settings) -->
+  <div
+    class="{{ uid }}__bg"
+    {% if section.settings.bg_image != blank %}
+      style="background-image:url('{{ section.settings.bg_image | image_url: width: 2400 }}');"
+    {% endif %}
+  ></div>
+
+  <!-- Overlay for readability -->
+  <div class="{{ uid }}__overlay"></div>
+
+  <div class="{{ uid }}__wrap page-width">
+    <div class="{{ uid }}__grid">
+
+      <!-- LEFT CONTENT -->
+      <div class="{{ uid }}__left">
+        <div class="{{ uid }}__kicker">
+          <span class="{{ uid }}__spark">✦</span>
+          <span>{{ section.settings.kicker }}</span>
+        </div>
+
+        <h2 class="{{ uid }}__heading">{{ section.settings.heading }}</h2>
+
+        <div class="{{ uid }}__desc">
+          {{ section.settings.description }}
+        </div>
+
+        <div class="{{ uid }}__statRow">
+          <div class="{{ uid }}__statBig">{{ section.settings.stat_big }}</div>
+          <div class="{{ uid }}__statText">{{ section.settings.stat_text }}</div>
+        </div>
+      </div>
+
+      <!-- RIGHT CARD / SLIDER -->
+      <div class="{{ uid }}__right">
+        <div class="{{ uid }}__card">
+
+          <div class="{{ uid }}__brandRow">
+            <div class="{{ uid }}__brandIcon"></div>
+            <div class="{{ uid }}__brandName">{{ section.settings.card_brand }}</div>
+            <div class="{{ uid }}__quotes">❞❞</div>
+          </div>
+
+          <div class="{{ uid }}__slides" aria-live="polite">
+            {% assign tcount = 0 %}
+            {% for block in section.blocks %}
+              {% if block.type == 'testimonial' %}
+                {% assign tcount = tcount | plus: 1 %}
+                <article
+                  class="{{ uid }}__slide {% if tcount == 1 %}is-active{% endif %}"
+                  data-slide="{{ tcount }}"
+                  {{ block.shopify_attributes }}
+                >
+                  <div class="{{ uid }}__text">“{{ block.settings.quote }}”</div>
+
+                  <div class="{{ uid }}__divider"></div>
+
+                  <div class="{{ uid }}__personRow">
+                    {% if block.settings.avatar != blank %}
+                      <img
+                        class="{{ uid }}__avatar"
+                        src="{{ block.settings.avatar | image_url: width: 120 }}"
+                        alt="{{ block.settings.name | escape }}"
+                        loading="lazy"
+                      >
+                    {% else %}
+                      <div class="{{ uid }}__avatar {{ uid }}__avatar--placeholder"></div>
+                    {% endif %}
+
+                    <div class="{{ uid }}__personMeta">
+                      <div class="{{ uid }}__name">{{ block.settings.name }}</div>
+                      <div class="{{ uid }}__role">{{ block.settings.role }}</div>
+                    </div>
+
+                    <div class="{{ uid }}__nav">
+                      <button class="{{ uid }}__btn" type="button" data-prev aria-label="Previous testimonial">←</button>
+                      <button class="{{ uid }}__btn" type="button" data-next aria-label="Next testimonial">→</button>
+                    </div>
+                  </div>
+                </article>
+              {% endif %}
+            {% endfor %}
+
+            {% if tcount == 0 %}
+              <div class="{{ uid }}__empty">Add “Testimonial” blocks in the section settings.</div>
+            {% endif %}
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- LOGO MARQUEE -->
+    <div class="{{ uid }}__logos" aria-label="Partner logos">
+      <div class="{{ uid }}__track">
+        <div class="{{ uid }}__marquee">
+          {% assign lcount = 0 %}
+          {% for block in section.blocks %}
+            {% if block.type == 'logo' %}
+              {% assign lcount = lcount | plus: 1 %}
+              <div class="{{ uid }}__logoItem" {{ block.shopify_attributes }}>
+                {% if block.settings.logo_image != blank %}
+                  <img
+                    src="{{ block.settings.logo_image | image_url: width: 280 }}"
+                    alt="{{ block.settings.alt | escape }}"
+                    loading="lazy"
+                  >
+                {% else %}
+                  <span class="{{ uid }}__logoText">{{ block.settings.text | default: "Logoipsum" }}</span>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <!-- clone for seamless loop -->
+        <div class="{{ uid }}__marquee" aria-hidden="true">
+          {% for block in section.blocks %}
+            {% if block.type == 'logo' %}
+              <div class="{{ uid }}__logoItem">
+                {% if block.settings.logo_image != blank %}
+                  <img
+                    src="{{ block.settings.logo_image | image_url: width: 280 }}"
+                    alt=""
+                    loading="lazy"
+                  >
+                {% else %}
+                  <span class="{{ uid }}__logoText">{{ block.settings.text | default: "Logoipsum" }}</span>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        {% if lcount == 0 %}
+          <div class="{{ uid }}__empty" style="margin-top:14px;">Add “Logo” blocks to show the scrolling logos.</div>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .{{ uid }}{
+    position: relative;
+    border-radius: 26px;
+    overflow: hidden;
+    margin: 36px auto;
+    padding: 70px 0 34px;
+    color: #fff;
+    background: #173a53;
+  }
+
+  /* Parallax background */
+  .{{ uid }}__bg{
+    position: absolute;
+    inset: -80px 0;                  /* extra height so it can move */
+    background-size: cover;
+    background-position: center;
+    transform: translateY(0px) scale(1.10);
+    will-change: transform;
+    z-index: 0;
+  }
+
+  /* Overlay (left darker like template) */
+  .{{ uid }}__overlay{
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+    rgba(23, 58, 83, .88) 0%,
+    rgba(23, 58, 83, .70) 55%,
+    rgba(23, 58, 83, .60) 100%
+
+    );
+    z-index: 1;
+  }
+
+  .{{ uid }}__wrap{ position: relative; z-index: 2; }
+
+  .{{ uid }}__grid{
+    display: grid;
+    grid-template-columns: 1.05fr .95fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .{{ uid }}__kicker{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    font-weight: 800;
+    font-size: 12px;
+    opacity: .95;
+    margin: 0 0 12px;
+  }
+  .{{ uid }}__spark{ color: #f0b429; }
+
+  .{{ uid }}__heading{
+    margin: 0 0 14px;
+    font-size: clamp(34px, 4vw, 54px);
+    line-height: 1.05;
+    font-weight: 900;
+  }
+
+  .{{ uid }}__desc{
+    max-width: 520px;
+    font-size: 14px;
+    line-height: 1.7;
+    opacity: .9;
+  }
+
+  .{{ uid }}__statRow{
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    margin-top: 30px;
+  }
+  .{{ uid }}__statBig{
+    font-size: 56px;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+  }
+  .{{ uid }}__statText{
+    font-weight: 700;
+    opacity: .9;
+    max-width: 260px;
+    line-height: 1.5;
+  }
+
+  /* Card */
+  .{{ uid }}__card{
+    background: rgba(255,255,255,.10);
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 20px;
+    padding: 22px 22px 18px;
+    backdrop-filter: blur(10px);
+  }
+
+  .{{ uid }}__brandRow{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .{{ uid }}__brandIcon{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #f0b429;
+    display: inline-block;
+  }
+  .{{ uid }}__brandName{ font-weight: 900; }
+  .{{ uid }}__quotes{
+    margin-left: auto;
+    opacity: .35;
+    font-size: 28px;
+    line-height: 1;
+  }
+
+  .{{ uid }}__slides{ position: relative; min-height: 210px; }
+  .{{ uid }}__slide{ display: none; }
+  .{{ uid }}__slide.is-active{ display: block; }
+
+  .{{ uid }}__text{
+    font-size: 14px;
+    line-height: 1.85;
+    opacity: .95;
+    margin: 10px 0 16px;
+  }
+
+  .{{ uid }}__divider{
+    height: 1px;
+    background: rgba(255,255,255,.18);
+    margin: 14px 0 14px;
+  }
+
+  .{{ uid }}__personRow{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .{{ uid }}__avatar{
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .{{ uid }}__avatar--placeholder{
+    background: rgba(255,255,255,.18);
+  }
+
+  .{{ uid }}__name{ font-weight: 900; }
+  .{{ uid }}__role{ opacity: .8; font-size: 13px; margin-top: 2px; }
+
+  .{{ uid }}__nav{
+    margin-left: auto;
+    display: flex;
+    gap: 10px;
+  }
+  .{{ uid }}__btn{
+    width: 42px;
+    height: 42px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.18);
+    background: rgba(255,255,255,.08);
+    color: #fff;
+    cursor: pointer;
+    font-weight: 900;
+  }
+  .{{ uid }}__btn:hover{
+    background: rgba(240,180,41,.25);
+    border-color: rgba(240,180,41,.5);
+  }
+
+  /* Logos marquee */
+  .{{ uid }}__logos{
+    margin-top: 34px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(255,255,255,.14);
+    overflow: hidden;
+  }
+
+  .{{ uid }}__track{
+    display: flex;
+    width: 100%;
+    gap: 44px;
+  }
+
+  .{{ uid }}__marquee{
+    display: flex;
+    align-items: center;
+    gap: 44px;
+    white-space: nowrap;
+    animation: {{ uid }}Marquee var(--marquee-speed, 22s) linear infinite;
+    will-change: transform;
+  }
+
+  /* Scroll RIGHT */
+  @keyframes {{ uid }}Marquee{
+    from{ transform: translateX(-100%); }
+    to{ transform: translateX(0%); }
+  }
+
+  .{{ uid }}__logoItem{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: .92;
+  }
+
+  .{{ uid }}__logoItem img{
+    height: 28px;
+    width: auto;
+    filter: brightness(0) invert(1);
+    opacity: .95;
+  }
+
+  .{{ uid }}__logoText{
+    font-weight: 900;
+    font-size: 18px;
+    letter-spacing: .01em;
+  }
+
+  .{{ uid }}__empty{
+    padding: 14px 16px;
+    background: rgba(255,255,255,.08);
+    border-radius: 14px;
+    display: inline-block;
+  }
+
+  @media (max-width: 900px){
+    .{{ uid }}{ padding: 52px 0 28px; }
+    .{{ uid }}__grid{ grid-template-columns: 1fr; }
+    .{{ uid }}__statBig{ font-size: 46px; }
+    .{{ uid }}__marquee{ gap: 26px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .{{ uid }}__marquee{ animation: none; }
+    .{{ uid }}__bg{ transform: scale(1.10); }
+  }
+</style>
+
+<script>
+  (function(){
+    const root = document.querySelector(".{{ uid }}");
+    if (!root) return;
+
+    /* ---------- Parallax ---------- */
+    const bg = root.querySelector(".{{ uid }}__bg");
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (bg && !reduced) {
+      const strength = 0.28; // 0.15 subtle, 0.28 nice, 0.40 strong
+
+      const updateParallax = () => {
+        const rect = root.getBoundingClientRect();
+        const vh = window.innerHeight || document.documentElement.clientHeight;
+
+        // progress approx -1..1
+        const progress = ((rect.top + rect.height / 2) - (vh / 2)) / vh;
+
+        const y = progress * -120 * strength; // px
+        bg.style.transform = `translateY(${y}px) scale(1.10)`;
+      };
+
+      updateParallax();
+      window.addEventListener("scroll", updateParallax, { passive: true });
+      window.addEventListener("resize", updateParallax);
+    }
+
+    /* ---------- Testimonials slider ---------- */
+    const slides = Array.from(root.querySelectorAll(".{{ uid }}__slide"));
+    if (slides.length) {
+      let index = slides.findIndex(s => s.classList.contains("is-active"));
+      if (index < 0) index = 0;
+
+      const show = (i) => {
+        slides.forEach(s => s.classList.remove("is-active"));
+        slides[i].classList.add("is-active");
+      };
+
+      const nextBtn = root.querySelector("[data-next]");
+      const prevBtn = root.querySelector("[data-prev]");
+
+      if (nextBtn) nextBtn.addEventListener("click", () => {
+        index = (index + 1) % slides.length;
+        show(index);
+      });
+
+      if (prevBtn) prevBtn.addEventListener("click", () => {
+        index = (index - 1 + slides.length) % slides.length;
+        show(index);
+      });
+
+      const auto = {{ section.settings.auto_rotate | json }};
+      const delay = {{ section.settings.rotate_delay | json }};
+
+      if (auto && !reduced) {
+        setInterval(() => {
+          index = (index + 1) % slides.length;
+          show(index);
+        }, delay);
+      }
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Testimonials + logos",
+  "settings": [
+    { "type": "image_picker", "id": "bg_image", "label": "Background image" },
+
+    { "type": "text", "id": "kicker", "label": "Small heading", "default": "OUR TESTIMONIALS" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "What our happy customers say about us" },
+    { "type": "richtext", "id": "description", "label": "Description", "default": "<p>Nothing makes us prouder than the trust our customers place in us every day.</p><p>From busy parents to health-conscious individuals.</p>" },
+
+    { "type": "text", "id": "stat_big", "label": "Big stat", "default": "99%" },
+    { "type": "text", "id": "stat_text", "label": "Stat text", "default": "Pure Milk. Happy Customers Always." },
+
+    { "type": "text", "id": "card_brand", "label": "Card brand", "default": "Logoipsum" },
+
+    { "type": "checkbox", "id": "auto_rotate", "label": "Auto rotate testimonials", "default": true },
+    { "type": "range", "id": "rotate_delay", "label": "Rotate delay (ms)", "min": 3000, "max": 9000, "step": 500, "default": 6000 }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        { "type": "textarea", "id": "quote", "label": "Quote", "default": "I've been using this dairy's service for over 18 months now..." },
+        { "type": "image_picker", "id": "avatar", "label": "Avatar" },
+        { "type": "text", "id": "name", "label": "Name", "default": "Herman Miller" },
+        { "type": "text", "id": "role", "label": "Role", "default": "Nutrition Expert" }
+      ]
+    },
+    {
+      "type": "logo",
+      "name": "Logo",
+      "settings": [
+        { "type": "image_picker", "id": "logo_image", "label": "Logo image (optional)" },
+        { "type": "text", "id": "text", "label": "Text fallback", "default": "Logoipsum" },
+        { "type": "text", "id": "alt", "label": "Alt text", "default": "Logo" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials + logos",
+      "blocks": [
+        { "type": "testimonial" },
+        { "type": "testimonial" },
+        { "type": "logo" },
+        { "type": "logo" },
+        { "type": "logo" },
+        { "type": "logo" }
+      ]
+    }
+  ]
+}
+{% endschema %}

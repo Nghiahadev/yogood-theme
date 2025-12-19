@@ -1,0 +1,430 @@
+{% comment %}
+  Projects Hover Preview + Click Popup (Shopify Section)
+  - Add blocks: Title, Description, Image
+  - Hover shows floating preview + cursor
+  - Click opens popup modal (full screen)
+{% endcomment %}
+
+<section class="projects">
+  <div class="projects__container">
+    <div class="projects__row project" data-projects>
+      {% for block in section.blocks %}
+        {% assign img = block.settings.image %}
+        <a
+          class="project__item"
+          href="#"
+          role="button"
+          aria-label="Open project {{ forloop.index }}"
+          data-index="{{ forloop.index0 }}"
+          data-title="{{ block.settings.title | escape }}"
+          data-desc="{{ block.settings.desc | escape }}"
+          data-img="{% if img != blank %}{{ img | image_url: width: 1600 }}{% endif %}"
+          {{ block.shopify_attributes }}
+        >
+          <div class="project__inner">
+            <h2 class="project__title">{{ block.settings.title }}</h2>
+            <span class="project__desc">{{ block.settings.desc }}</span>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Hover preview (floating) -->
+<div class="project-hover">
+  <div class="project-hover__preview" aria-hidden="true">
+    <div class="project-hover__list">
+      {% for block in section.blocks %}
+        {% assign img = block.settings.image %}
+        <div class="project-hover__item">
+          {% if img != blank %}
+            <img
+              src="{{ img | image_url: width: 900 }}"
+              alt="{{ block.settings.title | escape }}"
+              loading="lazy"
+            >
+          {% else %}
+            <div class="project-hover__empty">No image</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="project-hover__cursor" aria-hidden="true">
+    <p>View</p>
+  </div>
+</div>
+
+<!-- Click popup modal -->
+<div class="project-popup" aria-hidden="true">
+  <div class="project-popup__overlay" data-popup-close></div>
+
+  <div class="project-popup__dialog" role="dialog" aria-modal="true" aria-label="Project image preview">
+    <button class="project-popup__close" type="button" aria-label="Close" data-popup-close>✕</button>
+
+    <div class="project-popup__meta">
+      <h3 class="project-popup__title" data-popup-title></h3>
+      <p class="project-popup__desc" data-popup-desc></p>
+    </div>
+
+    <div class="project-popup__media">
+      <img data-popup-img alt="" />
+    </div>
+  </div>
+</div>
+
+<style>
+  .projects {
+    width: 100%;
+    color: #0b1727;
+    padding: 40px 0;
+  }
+
+  .projects__container {
+    width: min(1100px, 92%);
+    margin: 0 auto;
+  }
+
+  /* ================= PROJECT LIST ================= */
+  .project {
+    display: grid;
+    padding-bottom: clamp(20px, 8vw, 120px);
+  }
+
+  .project__item {
+    padding: clamp(20px, 4vw, 40px) 0;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .project__item:not(:last-child) {
+    border-bottom: 1px solid rgb(207, 207, 207);
+  }
+
+  .project__inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    column-gap: 20px;
+  }
+
+  .project__title {
+    font-size: clamp(20px, 5vw, 60px);
+    margin: 0;
+    font-weight: 800;
+    line-height: 1.05;
+    transition: color 0.3s, transform 0.3s;
+  }
+
+  .project__desc {
+    text-align: right;
+    color: #64748b;
+    font-size: clamp(14px, 2vw, 18px);
+    transition: color 0.3s, transform 0.3s;
+    white-space: nowrap;
+  }
+
+  @media (any-hover: hover) {
+    .project__item:hover .project__title {
+      color: #64748b;
+      transform: translateX(15px);
+    }
+    .project__item:hover .project__desc {
+      color: rgb(169, 169, 169);
+      transform: translateX(-15px);
+    }
+  }
+
+  /* ================= HOVER PREVIEW + CURSOR ================= */
+  .project-hover__preview,
+  .project-hover__cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    pointer-events: none;
+    transform: scale(0);
+    will-change: transform, left, top;
+  }
+
+  .project-hover__preview {
+    width: 400px;
+    height: 350px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+  }
+
+  .project-hover__list {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    will-change: transform;
+  }
+
+  .project-hover__item {
+    width: 400px;
+    height: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 100%;
+  }
+
+  .project-hover__item img {
+    width: 350px;
+    height: 350px;
+    object-fit: contain;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  .project-hover__empty {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-content: center;
+    color: #64748b;
+  }
+
+  .project-hover__cursor {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #1d4ed8;
+    color: white;
+    display: grid;
+    place-content: center;
+    font-weight: 700;
+    box-shadow: 0 12px 24px rgba(29, 78, 216, 0.35);
+  }
+
+  .project-hover__cursor p { margin: 0; }
+
+  /* ================= POPUP MODAL ================= */
+  .project-popup {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  .project-popup.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .project-popup__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.55);
+    backdrop-filter: blur(4px);
+  }
+
+  .project-popup__dialog {
+    position: relative;
+    width: min(980px, 92vw);
+    max-height: 86vh;
+    overflow: auto;
+    margin: 6vh auto;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 30px 80px rgba(0,0,0,.35);
+    padding: 18px;
+  }
+
+  .project-popup__close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    border: 1px solid rgba(0,0,0,.12);
+    background: #fff;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .project-popup__meta {
+    padding: 8px 50px 10px 6px;
+  }
+
+  .project-popup__title {
+    margin: 0 0 6px;
+    font-size: 22px;
+    font-weight: 800;
+  }
+
+  .project-popup__desc {
+    margin: 0;
+    color: #64748b;
+  }
+
+  .project-popup__media {
+    padding: 10px 6px 6px;
+  }
+
+  .project-popup__media img {
+    width: 100%;
+    height: auto;
+    max-height: 68vh;
+    object-fit: contain;
+    display: block;
+    border-radius: 14px;
+    background: #f6f7fb;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const root = document.querySelector('[data-projects]');
+    if (!root) return;
+
+    // prevent # jump
+    root.querySelectorAll('a[href="#"]').forEach(a => {
+      a.addEventListener('click', e => e.preventDefault());
+    });
+
+    // ---------- Hover preview ----------
+    const isTouch = matchMedia('(hover: none)').matches;
+    const preview = document.querySelector('.project-hover__preview');
+    const cursor = document.querySelector('.project-hover__cursor');
+    const list = document.querySelector('.project-hover__list');
+    const projects = root.querySelectorAll('.project__item');
+
+    let isInside = false;
+    let targetX = 0, targetY = 0;
+
+    function setScale(el, s) {
+      if (!el) return;
+      el.style.transform = `translate3d(${targetX}px, ${targetY}px, 0) scale(${s})`;
+    }
+
+    function move(el, x, y) {
+      if (!el) return;
+      el.style.transform = `translate3d(${x}px, ${y}px, 0) ${el === cursor ? '' : ''}`;
+    }
+
+    // simple follow animation (no GSAP required)
+    function follow() {
+      // do nothing; we set transforms directly in mousemove
+      requestAnimationFrame(follow);
+    }
+    follow();
+
+    if (!isTouch && preview && cursor && list && projects.length) {
+      window.addEventListener('mousemove', (e) => {
+        const { clientX, clientY } = e;
+
+        // cursor position
+        const cSize = cursor.offsetWidth || 80;
+        const cx = clientX - cSize / 2;
+        const cy = clientY - cSize / 2;
+
+        cursor.style.transform = `translate3d(${cx}px, ${cy}px, 0) scale(${isInside ? 1 : 0})`;
+
+        // preview position
+        const w = preview.offsetWidth || 400;
+        const h = preview.offsetHeight || 350;
+        const px = clientX - w / 2;
+        const py = clientY - h / 2;
+
+        preview.style.transform = `translate3d(${px}px, ${py}px, 0) scale(${isInside ? 1 : 0})`;
+      });
+
+      projects.forEach((project) => {
+        const index = Number(project.dataset.index || 0);
+        project.addEventListener('mouseenter', () => {
+          isInside = true;
+          list.style.transform = `translate3d(0, ${-index * 100}%, 0)`;
+        });
+      });
+
+      root.addEventListener('mouseleave', () => {
+        isInside = false;
+      });
+    }
+
+    // ---------- Click popup modal ----------
+    const popup = document.querySelector('.project-popup');
+    const popupImg = document.querySelector('[data-popup-img]');
+    const popupTitle = document.querySelector('[data-popup-title]');
+    const popupDesc = document.querySelector('[data-popup-desc]');
+    const closeBtns = document.querySelectorAll('[data-popup-close]');
+
+    function openPopup({ img, title, desc }) {
+      if (!popup || !popupImg) return;
+
+      popupImg.src = img || '';
+      popupImg.alt = title || 'Project image';
+      if (popupTitle) popupTitle.textContent = title || '';
+      if (popupDesc) popupDesc.textContent = desc || '';
+
+      popup.classList.add('is-open');
+      popup.setAttribute('aria-hidden', 'false');
+
+      // stop page scroll
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePopup() {
+      if (!popup) return;
+      popup.classList.remove('is-open');
+      popup.setAttribute('aria-hidden', 'true');
+
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+    }
+
+    projects.forEach((project) => {
+      project.addEventListener('click', () => {
+        openPopup({
+          img: project.dataset.img,
+          title: project.dataset.title,
+          desc: project.dataset.desc,
+        });
+      });
+    });
+
+    closeBtns.forEach(btn => btn.addEventListener('click', closePopup));
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closePopup();
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Projects hover + popup",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "project",
+      "name": "Project",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Project Title" },
+        { "type": "text", "id": "desc", "label": "Description", "default": "Design and development" },
+        { "type": "image_picker", "id": "image", "label": "Image" }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "Projects hover + popup", "blocks": [{ "type": "project" }, { "type": "project" }, { "type": "project" }] }
+  ]
+}
+{% endschema %}
