@@ -1,0 +1,512 @@
+{% comment %}
+  Subscription Plans (NH) — matches Picture 1 (light beige section + dark-blue popular card)
+  - Add blocks for each plan (Starter / Family / Weekly Fresh)
+  - Features list uses "|" separator
+  - Popular badge + popular styling
+{% endcomment %}
+
+{%- assign uid = 'subplans-' | append: section.id -%}
+
+<section class="{{ uid }}">
+  <div class="{{ uid }}__container page-width">
+    <div class="{{ uid }}__header">
+      {% if section.settings.subtitle != blank %}
+        <div class="{{ uid }}__subtitle">{{ section.settings.subtitle }}</div>
+      {% endif %}
+
+      {% if section.settings.heading != blank %}
+        <h2 class="{{ uid }}__title">{{ section.settings.heading }}</h2>
+      {% endif %}
+
+      {% if section.settings.description != blank %}
+        <div class="{{ uid }}__desc">{{ section.settings.description }}</div>
+      {% endif %}
+
+      <div class="{{ uid }}__featuresTop">
+        {% if section.settings.feature_1 != blank %}
+          <div class="{{ uid }}__featureItem">
+            <span class="{{ uid }}__featureIcon" aria-hidden="true">
+              <!-- cube/box icon -->
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M20 7L12 3L4 7M20 7L12 11M20 7V17L12 21M12 11L4 7M12 11V21M4 7V17L12 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span>{{ section.settings.feature_1 }}</span>
+          </div>
+        {% endif %}
+
+        {% if section.settings.feature_2 != blank %}
+          <div class="{{ uid }}__featureItem">
+            <span class="{{ uid }}__featureIcon" aria-hidden="true">
+              <!-- clock icon -->
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
+                <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <span>{{ section.settings.feature_2 }}</span>
+          </div>
+        {% endif %}
+
+        {% if section.settings.feature_3 != blank %}
+          <div class="{{ uid }}__featureItem">
+            <span class="{{ uid }}__featureIcon" aria-hidden="true">
+              <!-- check-circle icon -->
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span>{{ section.settings.feature_3 }}</span>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="{{ uid }}__plans">
+      {% for block in section.blocks %}
+        {% if block.type == 'plan' %}
+          {% assign is_popular = block.settings.popular %}
+          <div class="{{ uid }}__card {% if is_popular %}is-popular{% endif %}" {{ block.shopify_attributes }}>
+            {% if is_popular %}
+              <div class="{{ uid }}__badge" aria-label="Most popular">
+                <span class="{{ uid }}__badgeStar" aria-hidden="true">★</span>
+                <span>{{ section.settings.popular_text }}</span>
+              </div>
+            {% endif %}
+
+            <h3 class="{{ uid }}__planName">{{ block.settings.plan_name }}</h3>
+
+            {% if block.settings.tagline != blank %}
+              <p class="{{ uid }}__tagline">{{ block.settings.tagline }}</p>
+            {% endif %}
+
+            <div class="{{ uid }}__priceRow">
+              <span class="{{ uid }}__price">{{ block.settings.price }}</span>
+              <span class="{{ uid }}__period">{{ block.settings.period }}</span>
+            </div>
+
+            {% if block.settings.price_desc != blank %}
+              <p class="{{ uid }}__priceDesc">{{ block.settings.price_desc }}</p>
+            {% endif %}
+
+            {% if block.settings.features != blank %}
+              <ul class="{{ uid }}__list">
+                {% assign items = block.settings.features | split: '|' %}
+                {% for item in items %}
+                  {% assign txt = item | strip %}
+                  {% if txt != blank %}
+                    <li class="{{ uid }}__li">
+                      <span class="{{ uid }}__check" aria-hidden="true">✓</span>
+                      <span>{{ txt }}</span>
+                    </li>
+                  {% endif %}
+                {% endfor %}
+              </ul>
+            {% endif %}
+
+            {% if block.settings.button_text != blank %}
+              {% if block.settings.button_link != blank %}
+                <a class="{{ uid }}__btn" href="{{ block.settings.button_link }}">
+                  {{ block.settings.button_text }}
+                </a>
+              {% else %}
+                <button class="{{ uid }}__btn" type="button" data-plan="{{ block.settings.plan_name | escape }}">
+                  {{ block.settings.button_text }}
+                </button>
+              {% endif %}
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <p class="{{ uid }}__footer">
+      {{ section.settings.footer_text }}
+      {% if section.settings.footer_link_text != blank and section.settings.footer_link != blank %}
+        <a href="{{ section.settings.footer_link }}">{{ section.settings.footer_link_text }}</a>
+      {% endif %}
+    </p>
+  </div>
+</section>
+
+<style>
+    .{{ uid }}{
+      background: #ffffff; /* Picture 1 */
+      padding: 40px 0;
+    }
+
+    .{{ uid }}__container{
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .{{ uid }}__header{ margin-bottom: 50px; }
+
+    .{{ uid }}__subtitle{
+      color: #173a53;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+    }
+
+    .{{ uid }}__title{
+      color: #1a1a1a;
+      font-size: clamp(36px, 4.2vw, 56px);
+      font-weight: 700;
+      margin: 0 0 20px;
+      line-height: 1.1;
+    }
+
+    .{{ uid }}__desc{
+      color: #666;
+      font-size: 16px;
+      max-width: 600px;
+      margin: 0 auto 30px;
+      line-height: 1.6;
+    }
+
+    .{{ uid }}__featuresTop{
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .{{ uid }}__featureItem{
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .{{ uid }}__featureIcon{
+      width: 20px;
+      height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #ff9500; /* orange icon */
+    }
+
+    .{{ uid }}__featureIcon svg{
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    .{{ uid }}__plans{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      max-width: 1100px;
+      margin: 0 auto;
+      align-items: stretch;
+    }
+
+    .{{ uid }}__card{
+      background: #fff;
+      border-radius: 20px;
+      padding: 40px 30px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.08);
+      position: relative;
+      transition: transform .3s ease;
+      text-align: center;
+    }
+
+    .{{ uid }}__card:hover{ transform: translateY(-5px); }
+
+    .{{ uid }}__card.is-popular{
+      background: linear-gradient(135deg, #173a53 0%, #2a5a7a 100%);
+      color: #fff;
+      transform: scale(1.05);
+      box-shadow: 0 8px 30px rgba(23,58,83,.30);
+    }
+
+    .{{ uid }}__badge{
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #173a53;
+      color: #fff;
+      padding: 6px 20px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .{{ uid }}__card.is-popular .{{ uid }}__badge{
+      background: #fff;
+      color: #173a53;
+    }
+    .{{ uid }}__badgeStar{ font-size: 12px; line-height: 1; }
+
+    .{{ uid }}__planName{
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0 0 10px;
+      color: #1a1a1a;
+    }
+    .{{ uid }}__card.is-popular .{{ uid }}__planName{ color: #fff; }
+
+    .{{ uid }}__tagline{
+      font-size: 14px;
+      color: #666;
+      margin: 0 0 25px;
+    }
+    .{{ uid }}__card.is-popular .{{ uid }}__tagline{ color: rgba(255,255,255,.9); }
+
+    .{{ uid }}__priceRow{
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .{{ uid }}__price{
+      font-size: 48px;
+      font-weight: 700;
+      color: #173a53;
+      margin: 0;
+    }
+    .{{ uid }}__card.is-popular .{{ uid }}__price{ color: #fff; }
+
+    .{{ uid }}__period{
+      font-size: 18px;
+      font-weight: 400;
+      color: #1a1a1a;
+      opacity: .75;
+    }
+    .{{ uid }}__card.is-popular .{{ uid }}__period{ color: #fff; opacity: .9; }
+
+    .{{ uid }}__priceDesc{
+      font-size: 13px;
+      color: #888;
+      margin: 6px 0 30px;
+    }
+    .{{ uid }}__card.is-popular .{{ uid }}__priceDesc{ color: rgba(255,255,255,.8); }
+
+    .{{ uid }}__list{
+      list-style: none;
+      padding: 0;
+      margin: 0 0 30px;
+      text-align: left;
+    }
+
+    .{{ uid }}__li{
+      padding: 12px 0;
+      font-size: 14px;
+      color: #555;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .{{ uid }}__card.is-popular .{{ uid }}__li{ color: rgba(255,255,255,.95); }
+
+    .{{ uid }}__check{
+      width: 20px;
+      height: 20px;
+      background: #173a53;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 12px;
+      flex-shrink: 0;
+      opacity: .3; /* matches your original look */
+    }
+    .{{ uid }}__card.is-popular .{{ uid }}__check{
+      background: #fff;
+      color: #173a53;
+      opacity: .3;
+    }
+
+    .{{ uid }}__btn{
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .3s ease;
+      background: linear-gradient(135deg, #173a53 0%, #2a5a7a 100%);
+      color: #fff;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .{{ uid }}__btn:hover{
+      transform: scale(1.02);
+      box-shadow: 0 5px 15px rgba(23,58,83,.30);
+    }
+
+    .{{ uid }}__card.is-popular .{{ uid }}__btn{
+      background: #fff;
+      color: #173a53;
+    }
+
+    .{{ uid }}__card.is-popular .{{ uid }}__btn:hover{
+      background: #f5f5f5;
+    }
+
+    .{{ uid }}__footer{
+      margin-top: 40px;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .{{ uid }}__footer a{
+      color: #173a53;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px){
+      .{{ uid }}__plans{ grid-template-columns: 1fr; }
+      .{{ uid }}__card.is-popular{ transform: scale(1); }
+    }
+
+    {% if request.design_mode %}
+    <style>
+      /* Theme Editor "Add section" preview fixes */
+      .{{ uid }}__featureIcon,
+      .{{ uid }}__featureIcon svg{
+        width: 16px !important;
+        height: 16px !important;
+        max-width: 16px !important;
+        max-height: 16px !important;
+      }
+
+      .{{ uid }}__featuresTop{
+        gap: 14px !important;
+        margin-bottom: 20px !important;
+      }
+
+      /* Prevent huge stacked preview layout */
+      .{{ uid }}__featureItem{
+        white-space: nowrap !important;
+        font-size: 12px !important;
+      }
+    </style>
+  {% endif %}
+</style>
+
+<script>
+  (function () {
+    const root = document.querySelector('.{{ uid }}');
+    if (!root) return;
+
+    // Optional: demo click handler when button_link is empty
+    root.querySelectorAll('[data-plan]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const plan = btn.getAttribute('data-plan') || 'Plan';
+        alert(
+          'Selected plan: ' + plan + '\\n\\nAdd a Button link in the block settings to go to your subscription product.'
+        );
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Subscription Plans (NH)",
+  "settings": [
+    { "type": "text", "id": "subtitle", "label": "Small heading", "default": "SUBSCRIPTION PLANS" },
+    { "type": "text", "id": "heading", "label": "Main heading", "default": "Choose Your Perfect Plan" },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Select a subscription that fits your lifestyle. All plans include free delivery and the flexibility to customize your flavors.</p>"
+    },
+
+    { "type": "text", "id": "feature_1", "label": "Top feature 1", "default": "Free shipping on all orders" },
+    { "type": "text", "id": "feature_2", "label": "Top feature 2", "default": "Cancel or pause anytime" },
+    { "type": "text", "id": "feature_3", "label": "Top feature 3", "default": "100% satisfaction guarantee" },
+
+    { "type": "text", "id": "popular_text", "label": "Popular badge text", "default": "Most Popular" },
+
+    { "type": "text", "id": "footer_text", "label": "Footer text", "default": "Need a custom plan for your business?" },
+    { "type": "text", "id": "footer_link_text", "label": "Footer link text", "default": "Contact us" },
+    { "type": "url", "id": "footer_link", "label": "Footer link" }
+  ],
+  "blocks": [
+    {
+      "type": "plan",
+      "name": "Plan",
+      "settings": [
+        { "type": "checkbox", "id": "popular", "label": "Mark as popular", "default": false },
+        { "type": "text", "id": "plan_name", "label": "Plan name", "default": "Starter" },
+        { "type": "text", "id": "tagline", "label": "Tagline", "default": "Perfect for trying out our artisan yogurt" },
+        { "type": "text", "id": "price", "label": "Price (include $)", "default": "$24.99" },
+        { "type": "text", "id": "period", "label": "Period (e.g. /month)", "default": "/month" },
+        { "type": "text", "id": "price_desc", "label": "Price description", "default": "6 yogurt cups per delivery" },
+        {
+          "type": "textarea",
+          "id": "features",
+          "label": "Features (separate with | )",
+          "default": "6 cups per month|Free delivery|Change flavors anytime|Cancel anytime"
+        },
+        { "type": "text", "id": "button_text", "label": "Button text", "default": "Choose Plan" },
+        { "type": "url", "id": "button_link", "label": "Button link (optional)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Subscription Plans (NH)",
+      "blocks": [
+        {
+          "type": "plan",
+          "settings": {
+            "plan_name": "Starter",
+            "tagline": "Perfect for trying out our artisan yogurt",
+            "price": "$24.99",
+            "period": "/month",
+            "price_desc": "6 yogurt cups per delivery",
+            "features": "6 cups per month|Free delivery|Change flavors anytime|Cancel anytime",
+            "button_text": "Choose Plan"
+          }
+        },
+        {
+          "type": "plan",
+          "settings": {
+            "popular": true,
+            "plan_name": "Family",
+            "tagline": "Best value for yogurt lovers",
+            "price": "$44.99",
+            "period": "/month",
+            "price_desc": "12 yogurt cups per delivery",
+            "features": "12 cups per month|Free priority delivery|Change flavors anytime|Exclusive recipes|20% savings vs retail",
+            "button_text": "Choose Plan"
+          }
+        },
+        {
+          "type": "plan",
+          "settings": {
+            "plan_name": "Weekly Fresh",
+            "tagline": "Maximum freshness delivered weekly",
+            "price": "$19.99",
+            "period": "/week",
+            "price_desc": "4 yogurt cups per delivery",
+            "features": "4 cups weekly|Always fresh delivery|Change flavors weekly|Priority support",
+            "button_text": "Choose Plan"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
