@@ -1,0 +1,536 @@
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+  href="https://fonts.googleapis.com/css2?family=Aboreto&family=Poppins:wght@300;400;500;600;700;800&display=swap"
+  rel="stylesheet"
+>
+
+<div id="cc-icecream-1" class="cc-wrap">
+  <style>
+    /* =========================
+      Scoped styles ONLY inside #cc-icecream-1
+    ========================= */
+    #cc-icecream-1 {
+      font-family: 'Poppins', sans-serif;
+      width: 100%;
+      --border-color: rgba(255, 255, 255, 0.35);
+      --w-image: 500px;
+      --calculate: calc(3 / 2);
+      --btn-bg: rgba(255, 255, 255, 0.14);
+      --btn-hover: rgba(255, 255, 255, 0.25);
+      --shadow: 0 10px 40px rgba(0, 0, 0, 0.18);
+    }
+    #cc-icecream-1 * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    #cc-icecream-1 .carousel {
+      width: 100%;
+      height: min(760px, 100vh);
+      overflow: hidden;
+      position: relative;
+      border-radius: 18px;
+    }
+
+    #cc-icecream-1 .list {
+      height: 100%;
+      position: relative;
+    }
+
+    #cc-icecream-1 .list::before {
+      position: absolute;
+      width: var(--w-image);
+      height: 100%;
+      content: '';
+      top: 0;
+      left: calc(100% - calc(var(--w-image) * var(--calculate)));
+      border-left: 1px solid var(--border-color);
+      border-right: 1px solid var(--border-color);
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    #cc-icecream-1 .list::after {
+      position: absolute;
+      top: 40px;
+      left: 40px;
+      content: '';
+      width: 380px;
+      height: 280px;
+      z-index: 10;
+      pointer-events: none;
+      border-radius: 20px 60px 140px 260px;
+      filter: blur(140px);
+      opacity: 0.55;
+      background: radial-gradient(circle, rgba(255, 80, 80, 0.85), rgba(255, 80, 80, 0));
+    }
+
+    #cc-icecream-1 .item {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+    }
+
+    #cc-icecream-1 .item.active,
+    #cc-icecream-1 .item.other_1,
+    #cc-icecream-1 .item.other_2 {
+      display: block;
+    }
+
+    #cc-icecream-1 .item.active {
+      z-index: 2;
+    }
+    #cc-icecream-1 .item.other_1,
+    #cc-icecream-1 .item.other_2 {
+      pointer-events: none;
+    }
+
+    #cc-icecream-1 .image {
+      width: var(--w-image);
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: calc(100% - calc(var(--w-image) * var(--calculate)));
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      font-weight: 500;
+      z-index: 5;
+    }
+
+    #cc-icecream-1 .image img {
+      width: 92%;
+      margin-bottom: 16px;
+      filter: drop-shadow(0 120px 45px rgba(0, 0, 0, 0.25));
+      display: block;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    #cc-icecream-1 .image figcaption {
+      font-family: 'Aboreto', serif;
+      font-weight: 700;
+      font-size: 1.25em;
+      text-align: right;
+      margin-bottom: 26px;
+      width: 72%;
+      color: rgba(255, 255, 255, 0.92);
+    }
+
+    #cc-icecream-1 .main-content {
+      height: 100%;
+      display: grid;
+      grid-template-columns: calc(100% - calc(var(--w-image) * var(--calculate)));
+    }
+
+    #cc-icecream-1 .content {
+      padding: 120px 24px 24px 80px;
+      color: rgba(255, 255, 255, 0.94);
+    }
+
+    #cc-icecream-1 .eyebrow {
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      opacity: 0.85;
+      margin-bottom: 14px;
+    }
+
+    #cc-icecream-1 .content h2 {
+      font-size: clamp(2.2rem, 4.4vw, 4.6rem);
+      font-family: 'Aboreto', serif;
+      line-height: 1.05;
+      margin-bottom: 16px;
+    }
+
+    #cc-icecream-1 .price {
+      font-family: 'Aboreto', serif;
+      font-size: clamp(1.6rem, 3vw, 2.6rem);
+      margin: 14px 0 18px;
+      opacity: 0.95;
+    }
+
+    #cc-icecream-1 .description {
+      max-width: 520px;
+      font-size: 1.02rem;
+      line-height: 1.7;
+      opacity: 0.92;
+    }
+
+    #cc-icecream-1 .cta-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+
+    #cc-icecream-1 .btn {
+      appearance: none;
+      border: 1px solid var(--border-color);
+      background: var(--btn-bg);
+      color: #fff;
+      padding: 11px 18px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #cc-icecream-1 .btn:hover {
+      background: var(--btn-hover);
+      transform: translateY(-1px);
+      border-color: rgba(255, 255, 255, 0.55);
+    }
+
+    /* content reveal */
+    #cc-icecream-1 .item.active .main-content {
+      animation: ccShowContent 1s ease-in-out 1 forwards;
+    }
+    @keyframes ccShowContent {
+      from {
+        clip-path: circle(0% at 70% 50%);
+      }
+      to {
+        clip-path: circle(140% at 70% 50%);
+      }
+    }
+
+    /* arrows */
+    #cc-icecream-1 .arrows {
+      position: absolute;
+      bottom: 18px;
+      width: calc(100% - calc(var(--w-image) * var(--calculate)));
+      display: grid;
+      grid-template-columns: repeat(2, 48px);
+      grid-template-rows: 48px;
+      justify-content: end;
+      gap: 10px;
+      z-index: 30;
+      padding-right: 16px;
+    }
+
+    #cc-icecream-1 .arrows button {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: #fff;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 0;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: 0.25s ease;
+      border-radius: 12px;
+    }
+    #cc-icecream-1 .arrows button:hover {
+      background: rgba(255, 255, 255, 0.18);
+      transform: translateY(-1px);
+    }
+
+    /* Next animation */
+    #cc-icecream-1 .next .item.other_1 {
+      z-index: 1;
+    }
+    #cc-icecream-1 .next .item .image img,
+    #cc-icecream-1 .next .item .image figcaption {
+      animation: ccEffectNext 0.5s ease-in-out 1 forwards;
+    }
+    @keyframes ccEffectNext {
+      from {
+        transform: translateX(var(--transform-from));
+      }
+      to {
+        transform: translateX(calc(var(--transform-from) - var(--w-image)));
+      }
+    }
+    #cc-icecream-1 .next .item.active .image {
+      --transform-from: var(--w-image);
+    }
+    #cc-icecream-1 .next .item.other_1 .image {
+      z-index: 3;
+      --transform-from: 0px;
+      overflow: hidden;
+    }
+    #cc-icecream-1 .next .item.other_2 .image {
+      z-index: 3;
+      --transform-from: calc(var(--w-image) * 2);
+    }
+
+    /* Prev animation */
+    #cc-icecream-1 .prev .item .image img,
+    #cc-icecream-1 .prev .item .image figcaption {
+      animation: ccEffectPrev 0.5s ease-in-out 1 forwards;
+    }
+    @keyframes ccEffectPrev {
+      from {
+        transform: translateX(var(--transform-from));
+      }
+      to {
+        transform: translateX(calc(var(--transform-from) + var(--w-image)));
+      }
+    }
+    #cc-icecream-1 .prev .item.active .image {
+      --transform-from: calc(var(--w-image) * -1);
+      overflow: hidden;
+    }
+    #cc-icecream-1 .prev .item.other_1 .image {
+      --transform-from: 0px;
+      z-index: 3;
+    }
+    #cc-icecream-1 .prev .item.other_2 .image {
+      z-index: 3;
+      --transform-from: var(--w-image);
+    }
+    #cc-icecream-1 .prev .item.other_2 .main-content {
+      opacity: 0;
+    }
+
+    @media (max-width: 1023px) {
+      #cc-icecream-1 {
+        --calculate: 1;
+        --w-image: 380px;
+      }
+      #cc-icecream-1 .content {
+        padding: 90px 18px 18px 26px;
+      }
+    }
+
+    @media (max-width: 767px) {
+      #cc-icecream-1 .carousel {
+        height: 78vh;
+        border-radius: 14px;
+      }
+      #cc-icecream-1 .image {
+        width: 100%;
+        left: 0;
+        justify-content: center;
+        padding-top: 70px;
+      }
+      #cc-icecream-1 .image figcaption {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 14px;
+      }
+      #cc-icecream-1 .content {
+        display: none;
+      }
+      #cc-icecream-1 .arrows {
+        left: 50%;
+        transform: translateX(-50%);
+        justify-content: center;
+        width: 100%;
+        padding-right: 0;
+      }
+      #cc-icecream-1 .list::before {
+        display: none;
+      }
+    }
+  </style>
+
+  <section class="carousel next" data-cc-carousel>
+    <div class="list">
+      <!-- 1) Coffee Ice Cream -->
+      <article class="item other_1">
+        <div class="main-content" style="background: linear-gradient(135deg,#8a4b2e,#5c2c1b);">
+          <div class="content">
+            <div class="eyebrow">Coffee Collection</div>
+            <h2>Coffee Ice Cream</h2>
+            <p class="price">$8.99</p>
+            <p class="description">
+              Bold espresso flavor with a smooth, creamy finish. Perfect for coffee lovers who want dessert with a kick.
+            </p>
+            <div class="cta-row">
+              <a class="btn" href="#" role="button">Shop Coffee</a>
+              <a class="btn" href="#" role="button">View Details</a>
+            </div>
+          </div>
+        </div>
+        <figure class="image">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0737/2986/7931/files/cafe_ice_cream-removebg-preview.png?v=1765743134"
+            alt="Coffee ice cream"
+          >
+          <figcaption>Coffee Ice Cream</figcaption>
+        </figure>
+      </article>
+
+      <!-- 2) Strawberry Ice Cream -->
+      <article class="item active">
+        <div class="main-content" style="background: linear-gradient(135deg,#ffb6c7,#ff6a88);">
+          <div class="content">
+            <div class="eyebrow">Berry Favorites</div>
+            <h2>Strawberry Ice Cream</h2>
+            <p class="price">$8.99</p>
+            <p class="description">
+              Sweet strawberry taste with a refreshing, creamy bite. A classic flavor that always hits.
+            </p>
+            <div class="cta-row">
+              <a class="btn" href="#" role="button">Shop Strawberry</a>
+              <a class="btn" href="#" role="button">View Details</a>
+            </div>
+          </div>
+        </div>
+        <figure class="image">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0737/2986/7931/files/trawberry_ice_cream_remove.png?v=1765743133"
+            alt="Strawberry ice cream"
+          >
+          <figcaption>Strawberry Ice Cream</figcaption>
+        </figure>
+      </article>
+
+      <!-- 3) Blueberry Yogurt -->
+      <article class="item other_2">
+        <div class="main-content" style="background: linear-gradient(135deg,#5b6cff,#2b2f6b);">
+          <div class="content">
+            <div class="eyebrow">Yogurt Series</div>
+            <h2>Blueberry Yogurt</h2>
+            <p class="price">$7.49</p>
+            <p class="description">
+              Tangy yogurt blended with juicy blueberry notes. Light, bright, and super satisfying.
+            </p>
+            <div class="cta-row">
+              <a class="btn" href="#" role="button">Shop Blueberry</a>
+              <a class="btn" href="#" role="button">View Details</a>
+            </div>
+          </div>
+        </div>
+        <figure class="image">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0737/2986/7931/files/yogurt_blueberry-removebg-preview.png?v=1765743133"
+            alt="Blueberry yogurt"
+          >
+          <figcaption>Blueberry Yogurt</figcaption>
+        </figure>
+      </article>
+
+      <!-- 4) Mango Yogurt -->
+      <article class="item">
+        <div class="main-content" style="background: linear-gradient(135deg,#ffd36a,#ff8a00);">
+          <div class="content">
+            <div class="eyebrow">Tropical Blend</div>
+            <h2>Mango Yogurt</h2>
+            <p class="price">$7.49</p>
+            <p class="description">Creamy yogurt with a tropical mango twist. Smooth, sunny, and made for hot days.</p>
+            <div class="cta-row">
+              <a class="btn" href="#" role="button">Shop Mango</a>
+              <a class="btn" href="#" role="button">View Details</a>
+            </div>
+          </div>
+        </div>
+        <figure class="image">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0737/2986/7931/files/yogurt_mango-removebg-preview.png?v=1765743133"
+            alt="Mango yogurt"
+          >
+          <figcaption>Mango Yogurt</figcaption>
+        </figure>
+      </article>
+    </div>
+
+    <div class="arrows">
+      <button type="button" class="cc-prev" aria-label="Previous slide">&lt;</button>
+      <button type="button" class="cc-next" aria-label="Next slide">&gt;</button>
+    </div>
+  </section>
+
+  <script>
+    (function () {
+      const root = document.getElementById('cc-icecream-1');
+      if (!root) return;
+
+      const carousel = root.querySelector('[data-cc-carousel]');
+      const nextBtn = root.querySelector('.cc-next');
+      const prevBtn = root.querySelector('.cc-prev');
+      const items = Array.from(root.querySelectorAll('.item'));
+      const countItem = items.length;
+
+      let active = Math.min(1, countItem - 1);
+      let other_1 = active - 1 < 0 ? countItem - 1 : active - 1;
+      let other_2 = active + 1 >= countItem ? 0 : active + 1;
+
+      let autoPlay = null;
+      let isLocked = false;
+
+      function resetAnimations() {
+        items.forEach((el) => {
+          const img = el.querySelector('.image img');
+          const cap = el.querySelector('.image figcaption');
+          if (!img || !cap) return;
+          img.style.animation = 'none';
+          cap.style.animation = 'none';
+          void el.offsetWidth;
+          img.style.animation = '';
+          cap.style.animation = '';
+        });
+      }
+
+      function applyClasses() {
+        items.forEach((el) => el.classList.remove('active', 'other_1', 'other_2'));
+        items[active].classList.add('active');
+        items[other_1].classList.add('other_1');
+        items[other_2].classList.add('other_2');
+      }
+
+      function changeSlider() {
+        resetAnimations();
+        applyClasses();
+        if (autoPlay) clearInterval(autoPlay);
+        autoPlay = setInterval(() => nextBtn.click(), 5000);
+      }
+
+      function goNext() {
+        if (isLocked) return;
+        isLocked = true;
+
+        carousel.classList.remove('prev');
+        carousel.classList.add('next');
+
+        active = active + 1 >= countItem ? 0 : active + 1;
+        other_1 = active - 1 < 0 ? countItem - 1 : active - 1;
+        other_2 = active + 1 >= countItem ? 0 : active + 1;
+
+        changeSlider();
+        setTimeout(() => (isLocked = false), 520);
+      }
+
+      function goPrev() {
+        if (isLocked) return;
+        isLocked = true;
+
+        carousel.classList.remove('next');
+        carousel.classList.add('prev');
+
+        active = active - 1 < 0 ? countItem - 1 : active - 1;
+        other_1 = active + 1 >= countItem ? 0 : active + 1;
+        other_2 = other_1 + 1 >= countItem ? 0 : other_1 + 1;
+
+        changeSlider();
+        setTimeout(() => (isLocked = false), 520);
+      }
+
+      nextBtn.addEventListener('click', goNext);
+      prevBtn.addEventListener('click', goPrev);
+
+      // pause on hover (nice for Shopify pages)
+      carousel.addEventListener('mouseenter', () => autoPlay && clearInterval(autoPlay));
+      carousel.addEventListener('mouseleave', () => (autoPlay = setInterval(goNext, 5000)));
+
+      // init
+      applyClasses();
+      autoPlay = setInterval(goNext, 5000);
+    })();
+  </script>
+</div>
