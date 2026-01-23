@@ -1,0 +1,480 @@
+{% comment %}
+  New Arrivals Slider (Autoplay 3 seconds)
+  - Choose a collection in theme editor
+  - Shows product image + title + optional short description + price + button
+  - Autoplay, arrows, dots, pause on hover
+{% endcomment %}
+
+<section
+  class="na-slider"
+  id="na-slider-{{ section.id }}"
+  data-autoplay="{{ section.settings.autoplay }}"
+  data-interval="{{ section.settings.autoplay_speed | times: 1000 }}"
+>
+  <div class="na-slider__inner page-width">
+    {% if section.settings.heading != blank %}
+      <header class="na-slider__header">
+        <h2 class="na-slider__heading">{{ section.settings.heading }}</h2>
+        {% if section.settings.subheading != blank %}
+          <p class="na-slider__subheading">{{ section.settings.subheading }}</p>
+        {% endif %}
+      </header>
+    {% endif %}
+
+    {% assign featured_collection = collections[section.settings.collection] %}
+    {% if featured_collection == blank or featured_collection.products_count == 0 %}
+      <div class="na-slider__empty">
+        <p>Select a collection with products in the section settings.</p>
+      </div>
+    {% else %}
+
+      <div class="na-slider__viewport" aria-roledescription="carousel">
+        <div class="na-slider__track" role="list">
+          {% for product in featured_collection.products limit: section.settings.products_limit %}
+            <article class="na-slide" role="listitem">
+              <div class="na-slide__grid">
+                <a class="na-slide__media" href="{{ product.url }}">
+                  {% if product.featured_image %}
+                    {{ product.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', class: 'na-slide__img', alt: product.title }}
+                  {% else %}
+                    <div class="na-slide__img na-slide__img--placeholder"></div>
+                  {% endif %}
+                </a>
+
+                <div class="na-slide__content">
+                  <p class="na-slide__kicker">{{ section.settings.kicker | escape }}</p>
+
+                  <h3 class="na-slide__title">
+                    <a href="{{ product.url }}">{{ product.title }}</a>
+                  </h3>
+
+                  {% if section.settings.show_description %}
+                    {% assign desc = product.description | strip_html | strip %}
+                    {% if desc != blank %}
+                      <p class="na-slide__desc">
+                        {{ desc | truncate: 110 }}
+                      </p>
+                    {% endif %}
+                  {% endif %}
+
+                  {% if section.settings.show_price %}
+                    <p class="na-slide__price">
+                      {% if product.compare_at_price_max > product.price %}
+                        <span class="na-slide__price--sale">{{ product.price | money }}</span>
+                        <span class="na-slide__price--compare">{{ product.compare_at_price_max | money }}</span>
+                      {% else %}
+                        <span>{{ product.price | money }}</span>
+                      {% endif %}
+                    </p>
+                  {% endif %}
+
+                  <a class="na-slide__btn" href="{{ product.url }}">
+                    {{ section.settings.button_label }}
+                  </a>
+                </div>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+
+        {% if featured_collection.products_count > 1 %}
+          <button class="na-slider__arrow na-slider__arrow--prev" type="button" aria-label="Previous">
+            ‹
+          </button>
+          <button class="na-slider__arrow na-slider__arrow--next" type="button" aria-label="Next">
+            ›
+          </button>
+
+          <div class="na-slider__dots" aria-label="Carousel Pagination"></div>
+        {% endif %}
+      </div>
+
+    {% endif %}
+  </div>
+
+  <style>
+    /* ============== Layout ============== */
+    #na-slider-{{ section.id }} {
+      background: {{ section.settings.bg_color }};
+      padding: 72px 0;
+    }
+
+    #na-slider-{{ section.id }} .na-slider__header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    #na-slider-{{ section.id }} .na-slider__heading {
+      margin: 0;
+      font-size: clamp(32px, 4vw, 64px);
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+    }
+
+    #na-slider-{{ section.id }} .na-slider__subheading {
+      margin: 10px auto 0;
+      max-width: 760px;
+      opacity: 0.7;
+      font-size: 16px;
+    }
+
+    #na-slider-{{ section.id }} .na-slider__viewport {
+      position: relative;
+      overflow: hidden;
+      border-radius: 18px;
+    }
+
+    #na-slider-{{ section.id }} .na-slider__track {
+      display: flex;
+      transition: transform 500ms ease;
+      will-change: transform;
+    }
+
+    #na-slider-{{ section.id }} .na-slide {
+      min-width: 100%;
+      padding: 18px;
+      box-sizing: border-box;
+    }
+
+    #na-slider-{{ section.id }} .na-slide__grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 28px;
+      align-items: center;
+      background: rgba(255,255,255,0.65);
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 18px;
+      padding: 28px;
+      backdrop-filter: blur(6px);
+    }
+
+    #na-slider-{{ section.id }} .na-slide__media {
+      display: block;
+      border-radius: 16px;
+      overflow: hidden;
+      background: rgba(0,0,0,0.03);
+    }
+
+    #na-slider-{{ section.id }} .na-slide__img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+      aspect-ratio: 4 / 3;
+    }
+
+    #na-slider-{{ section.id }} .na-slide__img--placeholder {
+      aspect-ratio: 4 / 3;
+    }
+
+    #na-slider-{{ section.id }} .na-slide__content {
+      padding: 6px 6px 6px 0;
+    }
+
+    #na-slider-{{ section.id }} .na-slide__kicker {
+      margin: 0 0 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-size: 12px;
+      opacity: 0.6;
+    }
+
+    #na-slider-{{ section.id }} .na-slide__title {
+      margin: 0 0 10px;
+      font-size: clamp(22px, 2.2vw, 34px);
+      line-height: 1.15;
+    }
+
+    #na-slider-{{ section.id }} .na-slide__title a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    #na-slider-{{ section.id }} .na-slide__desc {
+      margin: 0 0 16px;
+      opacity: 0.75;
+      line-height: 1.55;
+    }
+
+    #na-slider-{{ section.id }} .na-slide__price {
+      margin: 0 0 18px;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    #na-slider-{{ section.id }} .na-slide__price--compare {
+      margin-left: 10px;
+      opacity: 0.6;
+      text-decoration: line-through;
+      font-weight: 600;
+    }
+
+    #na-slider-{{ section.id }} .na-slide__btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.25);
+      text-decoration: none;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-size: 12px;
+      background: transparent;
+      transition: transform 150ms ease, background 150ms ease;
+    }
+
+    #na-slider-{{ section.id }} .na-slide__btn:hover {
+      transform: translateY(-1px);
+      background: rgba(0,0,0,0.05);
+    }
+
+    /* ============== Arrows ============== */
+    #na-slider-{{ section.id }} .na-slider__arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.18);
+      background: rgba(255,255,255,0.8);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 28px;
+      line-height: 1;
+      transition: transform 150ms ease, background 150ms ease;
+      user-select: none;
+    }
+
+    #na-slider-{{ section.id }} .na-slider__arrow:hover {
+      background: rgba(255,255,255,0.95);
+      transform: translateY(-50%) scale(1.03);
+    }
+
+    #na-slider-{{ section.id }} .na-slider__arrow--prev { left: 14px; }
+    #na-slider-{{ section.id }} .na-slider__arrow--next { right: 14px; }
+
+    /* ============== Dots ============== */
+    #na-slider-{{ section.id }} .na-slider__dots {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      padding: 14px 0 0;
+    }
+
+    #na-slider-{{ section.id }} .na-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.25);
+      background: rgba(0,0,0,0.12);
+      cursor: pointer;
+      transition: transform 150ms ease, background 150ms ease;
+    }
+
+    #na-slider-{{ section.id }} .na-dot[aria-current="true"] {
+      background: rgba(0,0,0,0.55);
+      transform: scale(1.15);
+    }
+
+    /* ============== Mobile ============== */
+    @media (max-width: 860px) {
+      #na-slider-{{ section.id }} {
+        padding: 48px 0;
+      }
+
+      #na-slider-{{ section.id }} .na-slide__grid {
+        grid-template-columns: 1fr;
+        padding: 18px;
+      }
+
+      #na-slider-{{ section.id }} .na-slider__arrow {
+        top: auto;
+        bottom: 64px;
+        transform: none;
+      }
+
+      #na-slider-{{ section.id }} .na-slider__arrow--prev { left: 18px; }
+      #na-slider-{{ section.id }} .na-slider__arrow--next { right: 18px; }
+    }
+  </style>
+
+  <script>
+    (function () {
+      const root = document.getElementById("na-slider-{{ section.id }}");
+      if (!root) return;
+
+      const track = root.querySelector(".na-slider__track");
+      const slides = Array.from(root.querySelectorAll(".na-slide"));
+      const prevBtn = root.querySelector(".na-slider__arrow--prev");
+      const nextBtn = root.querySelector(".na-slider__arrow--next");
+      const dotsWrap = root.querySelector(".na-slider__dots");
+
+      if (!track || slides.length <= 1) return;
+
+      const autoplay = root.dataset.autoplay === "true";
+      const interval = parseInt(root.dataset.interval || "3000", 10);
+
+      let index = 0;
+      let timer = null;
+      let isHovering = false;
+
+      function goTo(i) {
+        index = (i + slides.length) % slides.length;
+        track.style.transform = `translateX(-${index * 100}%)`;
+        updateDots();
+      }
+
+      function next() { goTo(index + 1); }
+      function prev() { goTo(index - 1); }
+
+      function buildDots() {
+        if (!dotsWrap) return;
+        dotsWrap.innerHTML = "";
+        slides.forEach((_, i) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "na-dot";
+          b.setAttribute("aria-label", `Go to slide ${i + 1}`);
+          b.addEventListener("click", () => {
+            goTo(i);
+            restartAutoplay();
+          });
+          dotsWrap.appendChild(b);
+        });
+        updateDots();
+      }
+
+      function updateDots() {
+        if (!dotsWrap) return;
+        const dots = Array.from(dotsWrap.querySelectorAll(".na-dot"));
+        dots.forEach((d, i) => d.setAttribute("aria-current", i === index ? "true" : "false"));
+      }
+
+      function startAutoplay() {
+        if (!autoplay) return;
+        stopAutoplay();
+        timer = window.setInterval(() => {
+          if (!isHovering) next();
+        }, interval);
+      }
+
+      function stopAutoplay() {
+        if (timer) window.clearInterval(timer);
+        timer = null;
+      }
+
+      function restartAutoplay() {
+        if (!autoplay) return;
+        startAutoplay();
+      }
+
+      // Events
+      nextBtn && nextBtn.addEventListener("click", () => { next(); restartAutoplay(); });
+      prevBtn && prevBtn.addEventListener("click", () => { prev(); restartAutoplay(); });
+
+      root.addEventListener("mouseenter", () => { isHovering = true; });
+      root.addEventListener("mouseleave", () => { isHovering = false; });
+
+      // Init
+      buildDots();
+      goTo(0);
+      startAutoplay();
+
+      // Cleanup (theme editor section reload)
+      document.addEventListener("shopify:section:unload", function (e) {
+        if (e.detail && e.detail.sectionId === "{{ section.id }}") {
+          stopAutoplay();
+        }
+      });
+    })();
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "New Arrivals Slider",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "YogoodHeal Production"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "New Arrivals"
+    },
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Small label (kicker)",
+      "default": "NEW ARRIVALS"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_limit",
+      "label": "Number of products",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 6
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show short description",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "label": "Show price",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "See product"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "Autoplay speed (seconds)",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#f6f1e8"
+    }
+  ],
+  "presets": [
+    {
+      "name": "New Arrivals Slider"
+    }
+  ]
+}
+{% endschema %}
