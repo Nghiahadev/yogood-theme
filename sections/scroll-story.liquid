@@ -1,0 +1,312 @@
+{% comment %}
+  Section: Scroll Story (stacked full-height panels with fixed image)
+{% endcomment %}
+
+<section
+  class="scroll-story"
+  style="
+    --ss-gap: {{ section.settings.gap }}px;
+    --ss-padding-x: {{ section.settings.padding_x }}px;
+    --ss-padding-y: {{ section.settings.padding_y }}px;
+    --ss-image-width: {{ section.settings.image_width }}vmax;
+    --ss-right: {{ section.settings.image_right_offset }}px;
+  "
+>
+  {% for block in section.blocks %}
+    {% assign bg = block.settings.bg_color | default: '#ececec' %}
+    <div
+      class="ss-panel"
+      style="--ss-bg: {{ bg }}; --ss-z: {{ 100 | minus: forloop.index }};"
+      {{ block.shopify_attributes }}
+    >
+      <div class="ss-content">
+        {% if block.settings.title != blank %}
+          <h2 class="ss-title">{{ block.settings.title }}</h2>
+        {% endif %}
+
+        {% if block.settings.desc != blank %}
+          <div class="ss-desc">{{ block.settings.desc }}</div>
+        {% endif %}
+
+        {% if block.settings.button_label != blank and block.settings.button_link != blank %}
+          <a class="ss-btn" href="{{ block.settings.button_link }}">
+            {{ block.settings.button_label }}
+          </a>
+        {% endif %}
+      </div>
+
+      <div class="ss-image">
+        {% if block.settings.image != blank %}
+          {{ block.settings.image | image_url: width: 1200 | image_tag: class: 'ss-img', loading: 'lazy', alt: block.settings.title }}
+        {% elsif block.settings.image_url != blank %}
+          <img class="ss-img" src="{{ block.settings.image_url }}" alt="{{ block.settings.title | escape }}" loading="lazy">
+        {% else %}
+          <div class="ss-img ss-placeholder">Add an image</div>
+        {% endif %}
+      </div>
+    </div>
+  {% endfor %}
+</section>
+
+<style>
+  /* Optional Google Font (same as your sample) */
+  @import url("https://fonts.googleapis.com/css2?family=Aboreto&display=swap");
+
+  .scroll-story {
+    font-family: "Aboreto", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color: #222;
+    background: #ececec;
+  }
+
+  .scroll-story .ss-panel {
+    display: flex;
+    align-items: center;
+    gap: var(--ss-gap);
+    min-height: 100vh;
+    padding: var(--ss-padding-y) var(--ss-padding-x);
+    background: var(--ss-bg);
+    position: relative;
+    z-index: var(--ss-z);
+
+    /* Scroll animation timeline (experimental) */
+    view-timeline-name: --ss-panel;
+    view-timeline-axis: block;
+  }
+
+  .scroll-story .ss-content {
+    width: 50%;
+    padding-left: 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 24px;
+  }
+
+  .scroll-story .ss-title {
+    margin: 0;
+    font-size: clamp(28px, 3vw, 56px);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .scroll-story .ss-desc {
+    line-height: 1.7;
+    font-size: clamp(14px, 1.2vw, 18px);
+    max-width: 55ch;
+    text-wrap: balance;
+  }
+
+  .scroll-story .ss-btn {
+    display: inline-flex;
+    width: fit-content;
+    padding: 12px 18px;
+    border-radius: 999px;
+    border: 1px solid rgba(0,0,0,0.18);
+    color: #222;
+    text-decoration: none;
+    transition: transform .2s ease, background .2s ease;
+    background: rgba(255,255,255,0.35);
+  }
+  .scroll-story .ss-btn:hover {
+    transform: translateY(-2px);
+    background: rgba(255,255,255,0.55);
+  }
+
+  .scroll-story .ss-image {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    right: var(--ss-right);
+    width: var(--ss-image-width);
+    height: calc(var(--ss-image-width) * 3 / 4);
+    pointer-events: none; /* keep scrolling smooth */
+  }
+
+  .scroll-story .ss-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+    /* Scroll wipe animation (experimental) */
+    animation: ss-wipe linear both;
+    animation-timeline: --ss-panel;
+    /* nice range so it animates during exit */
+    --ss-gap2: calc((100% - (calc(var(--ss-image-width) * 3 / 4))) / 2);
+    animation-range: exit 15% exit 85%;
+    border-radius: 18px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.18);
+  }
+
+  .scroll-story .ss-placeholder {
+    display: grid;
+    place-items: center;
+    background: rgba(255,255,255,0.4);
+    border: 1px dashed rgba(0,0,0,0.25);
+    color: rgba(0,0,0,0.6);
+    border-radius: 18px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+  }
+
+  @keyframes ss-wipe {
+    0%   { clip-path: inset(0 0 0 0); }
+    100% { clip-path: inset(0 0 100% 0); }
+  }
+
+  /* Responsive */
+  @media (max-width: 991px) {
+    .scroll-story .ss-panel {
+      flex-direction: column;
+      justify-content: center;
+      padding: 48px 20px;
+    }
+    .scroll-story .ss-content {
+      width: 100%;
+      padding-left: 0;
+    }
+    .scroll-story .ss-image {
+      position: relative;
+      right: auto;
+      width: 100%;
+      height: 320px;
+      pointer-events: auto;
+    }
+    .scroll-story .ss-img {
+      animation: none; /* avoid weird behavior on mobile */
+      clip-path: none;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Scroll Story (fixed image)",
+  "settings": [
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Gap between text & image",
+      "min": 12,
+      "max": 80,
+      "step": 4,
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_x",
+      "label": "Horizontal padding",
+      "min": 12,
+      "max": 120,
+      "step": 4,
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_y",
+      "label": "Vertical padding",
+      "min": 12,
+      "max": 120,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "image_width",
+      "label": "Image width (vmax)",
+      "min": 20,
+      "max": 50,
+      "step": 1,
+      "default": 35
+    },
+    {
+      "type": "range",
+      "id": "image_right_offset",
+      "label": "Image right offset (px)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 48
+    }
+  ],
+  "blocks": [
+    {
+      "type": "panel",
+      "name": "Panel",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Timeless Aesthetics"
+        },
+        {
+          "type": "richtext",
+          "id": "desc",
+          "label": "Description",
+          "default": "<p>We believe great design never goes out of style. Each project is built on clean lines, thoughtful materials, and harmony between form and function.</p>"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image (recommended)"
+        },
+        {
+          "type": "url",
+          "id": "image_url",
+          "label": "Image URL (optional fallback)"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background color",
+          "default": "#d4e3d2"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label (optional)"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link (optional)"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    {
+      "name": "Scroll Story (fixed image)",
+      "blocks": [
+        { "type": "panel" },
+        {
+          "type": "panel",
+          "settings": {
+            "title": "Made for You",
+            "desc": "<p>Your home should tell your story. We tailor every detail — from layout to lighting — to reflect your lifestyle, personality, and vision.</p>",
+            "bg_color": "#efcbc5"
+          }
+        },
+        {
+          "type": "panel",
+          "settings": {
+            "title": "Smooth Sailing",
+            "desc": "<p>From concept to completion, we guide you through each step. Our transparent process ensures clarity, collaboration, and creativity at every stage.</p>",
+            "bg_color": "#ebe1c6"
+          }
+        },
+        {
+          "type": "panel",
+          "settings": {
+            "title": "Earth in Mind",
+            "desc": "<p>We design with respect for the planet. From local craftsmanship to eco-friendly materials, our spaces are beautiful, responsible, and lasting.</p>",
+            "bg_color": "#cbd0e2"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
